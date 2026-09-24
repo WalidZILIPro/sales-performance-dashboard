@@ -1,0 +1,22 @@
+# .NET
+bin/
+obj/
+TestResults/
+*.user
+.vs/
+
+# Node
+node_modules/
+dist/
+coverage/
+*.tsbuildinfo
+
+# Local environment and editors
+.env
+.env.*
+.idea/
+.vscode/
+*.log
+
+# The task brief belongs to the company; it stays local.
+*.pdf

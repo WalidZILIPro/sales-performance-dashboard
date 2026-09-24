@@ -1,0 +1,5 @@
+# Normalise line endings: the repo is edited on Windows and built in Linux containers.
+* text=auto eol=lf
+*.sln text eol=crlf
+*.png binary
+*.pdf binary
