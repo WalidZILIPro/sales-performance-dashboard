@@ -1,0 +1,65 @@
+name: sales-dashboard
+
+# `docker compose up --build` builds everything from source inside containers (no local .NET or Node
+# needed), applies migrations, seeds the database and serves the dashboard at http://localhost:3000.
+
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_DB: sales_dashboard
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    # The app reaches Postgres as `db:5432` over the bridge network below. The host port is only for
+    # local tools (psql, pgAdmin, DBeaver). 5434 avoids clashing with a local Postgres on 5432/5433,
+    # and binding to 127.0.0.1 keeps it off the LAN.
+    ports:
+      - "127.0.0.1:5434:5432"
+    networks:
+      - backend
+    volumes:
+      - db-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d sales_dashboard"]
+      interval: 3s
+      timeout: 3s
+      retries: 20
+
+  api:
+    build:
+      context: ./backend
+      target: runtime
+    environment:
+      ConnectionStrings__Default: "Host=db;Port=5432;Database=sales_dashboard;Username=postgres;Password=postgres"
+      ASPNETCORE_ENVIRONMENT: Production
+    ports:
+      - "8080:8080" # Swagger UI at http://localhost:8080/swagger
+    networks:
+      - backend
+      - frontend
+    depends_on:
+      db:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      target: runtime
+    ports:
+      - "3000:80"
+    networks:
+      - frontend
+    depends_on:
+      # Healthy = migrations applied and data seeded, so the first page load is a full dashboard.
+      api:
+        condition: service_healthy
+
+networks:
+  # Two user-defined bridges: the frontend (nginx) can reach the api but not the database.
+  backend:
+    driver: bridge
+  frontend:
+    driver: bridge
+
+volumes:
+  db-data:

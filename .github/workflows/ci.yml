@@ -1,0 +1,53 @@
+name: CI
+
+# The same commands a reviewer runs locally: everything builds and tests inside Docker, so CI
+# needs no .NET or Node setup and cannot drift from the local environment.
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  backend:
+    name: Backend unit tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run the test stage
+        run: docker build --target test backend
+
+  frontend:
+    name: Frontend typecheck and tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build and run the test stage
+        run: docker build --target test frontend
+
+  smoke:
+    name: Full stack smoke test
+    runs-on: ubuntu-latest
+    needs: [backend, frontend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Start the stack (migrate + seed, waits for healthchecks)
+        run: docker compose up --build --wait --wait-timeout 180
+      - name: Check the UI and the API through the nginx proxy
+        run: |
+          curl -fsS http://localhost:3000/ > /dev/null
+          for path in "dashboard/summary?preset=Last30Days" "dashboard/trend?preset=Last30Days" \
+                      "dashboard/managers?preset=Last30Days" "dashboard/categories?preset=Last30Days" \
+                      "dashboard/products/top?preset=Last30Days" "sales?preset=Last30Days&page=1&pageSize=5"; do
+            echo "GET /api/v1/$path"
+            curl -fsS "http://localhost:3000/api/v1/$path" > /dev/null
+          done
+      - name: Logs on failure
+        if: failure()
+        run: docker compose logs --no-color
+      - name: Stop
+        if: always()
+        run: docker compose down -v
