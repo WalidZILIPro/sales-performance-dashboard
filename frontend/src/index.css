@@ -1,0 +1,28 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  html {
+    /* Desktop product (brief: ~1440×900); below that the page scrolls sideways instead of collapsing. */
+    min-width: 1280px;
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'cv11', 'ss01';
+  }
+  body {
+    @apply bg-slate-50 font-sans text-slate-900 dark:bg-slate-950 dark:text-slate-100;
+  }
+  /* Native controls (date inputs, scrollbars) follow the theme too. */
+  html.dark {
+    color-scheme: dark;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
