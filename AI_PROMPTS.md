@@ -163,3 +163,9 @@ push to github everything and explain normally i should have pushed multiple tim
 and also add that normallly back should be a repo and front a repo but for the sake of the test it's better that everything should be in one repo !
 
 *Purpose:* publish the work and be open about the git history. Result: a public GitHub repo. The README explains why the history is a few commits made at push time (real timestamps, nothing backdated) and why this test uses one repo when a real team would split the backend and frontend. I added GitHub Actions CI (backend tests, frontend typecheck and tests, and a full-stack smoke test through compose) and described what CD would look like. The brief PDF is not published.
+
+## 15:28 — Claude Code / Opus 5.5
+
+https://github.com/WalidZILIPro/sales-performance-dashboard (also in readme explain that due to an accident i don't have access to my old account (all of my old project are on ziliwalid))
+
+*Purpose:* publish to the repo I created, and explain the new account in the README with a link to my earlier projects on `ziliwalid`.

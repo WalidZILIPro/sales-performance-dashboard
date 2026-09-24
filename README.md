@@ -174,6 +174,10 @@ I am still learning Russian. The brief is in Russian and I worked from it withou
 and documentation are in English so they are easy to review; the seed data uses Russian names so the
 dashboard looks like a product for the Russian market.
 
+**My GitHub accounts.** This repository is on a new account, because after an accident I lost access
+to my old one. My earlier projects are still there:
+[github.com/ziliwalid](https://github.com/ziliwalid).
+
 I built this with an AI coding agent (Claude Code). How I used it, where it went wrong, and how the
 result was checked are in [`AI_NOTES.md`](AI_NOTES.md). Every prompt, word for word, is in
 [`AI_PROMPTS.md`](AI_PROMPTS.md).
